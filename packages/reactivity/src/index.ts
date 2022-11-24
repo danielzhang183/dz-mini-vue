@@ -3,23 +3,39 @@ export type DepsMap = Map<string, Deps> | undefined
 
 export type Deps = Set<Function> | undefined
 
+export interface EffectFn {
+  (): void
+  deps: Array<Deps>
+}
+
 const bucket: WeakMap<Object, DepsMap> = new WeakMap()
 
 const data = {
+  ok: true,
   text: 'hellow world',
 }
 
-let activeEffect: Function | undefined
+let activeEffect: EffectFn | undefined
 
 function effect(fn: Function) {
-  activeEffect = fn
-  fn()
+  const effectFn: EffectFn = () => {
+    cleanup(effectFn)
+    activeEffect = effectFn
+    fn()
+  }
+
+  effectFn.deps = []
+  effectFn()
 }
 
-effect(() => {
-  console.log('effect run')
-  console.log(data.text)
-})
+function cleanup(effectFn: EffectFn) {
+  for (let i = 0; i < effectFn.deps.length; i++) {
+    const deps = effectFn.deps[i]
+    deps?.delete(effectFn)
+  }
+
+  effectFn.deps.length = 0
+}
 
 const obj = new Proxy(data, {
   get(target: any, key: string) {
@@ -30,6 +46,11 @@ const obj = new Proxy(data, {
     target[key] = newVal
     return trigger(target, key)
   },
+})
+
+effect(() => {
+  console.log('effect run')
+  console.log(obj.ok ? obj.text : 'not')
 })
 
 function track(target: any, key: string): void {
@@ -44,6 +65,7 @@ function track(target: any, key: string): void {
   if (!deps)
     depsMap.set(key, (deps = new Set()))
   deps.add(activeEffect)
+  activeEffect.deps.push(deps)
 }
 
 function trigger(target: any, key: string): boolean {
@@ -55,7 +77,8 @@ function trigger(target: any, key: string): boolean {
   if (!effects)
     return false
 
-  effects.forEach(fn => fn())
+  const effectsToRun = new Set(effects)
+  effectsToRun.forEach(effectFn => effectFn())
   return true
 }
 
