@@ -8,3 +8,7 @@ export {
   jobQueue,
   flushJob,
 } from './flush'
+
+export {
+  computed,
+} from './computed'

@@ -6,10 +6,14 @@ export type EffectScheduler = (...args: any[]) => any
 
 export interface EffectOptions {
   scheduler?: EffectScheduler
+  /**
+   * @default false
+   */
+  lazy?: boolean
 }
 
 export interface EffectFn {
-  (): void
+  (): any
   deps: Array<Deps>
   options: EffectOptions
 }

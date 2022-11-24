@@ -10,14 +10,18 @@ export function effect(fn: Function, options?: EffectOptions) {
     cleanup(effectFn)
     activeEffect = effectFn
     effectStack.push(effectFn)
-    fn()
+    const res = fn()
     effectStack.pop()
     activeEffect = effectStack[effectStack.length - 1]
+    return res
   }
 
   effectFn.options = options || {}
   effectFn.deps = []
-  effectFn()
+  if (!options?.lazy)
+    effectFn()
+
+  return effectFn
 }
 
 function cleanup(effectFn: EffectFn) {

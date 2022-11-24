@@ -1,24 +1,8 @@
 /* eslint-disable no-console */
 import { describe, it } from 'vitest'
-import { effect, track, trigger } from '../src'
+import { effect } from '../src'
 import { flushJob, jobQueue } from '../src/flush'
-
-const data = {
-  ok: true,
-  text: 'hellow world',
-  foo: 1,
-}
-
-const obj = new Proxy(data, {
-  get(target: any, key: string) {
-    track(target, key)
-    return target[key]
-  },
-  set(target, key: string, newVal) {
-    target[key] = newVal
-    return trigger(target, key)
-  },
-})
+import { obj } from './fixures'
 
 describe('effect', () => {
   it.skip('scheduler run', () => {
@@ -52,8 +36,6 @@ describe('effect', () => {
       },
     })
     obj.foo++
-    console.log(jobQueue.size)
     obj.foo++
-    console.log(jobQueue.size)
   })
 })
