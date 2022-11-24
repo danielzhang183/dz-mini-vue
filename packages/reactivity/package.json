@@ -1,0 +1,12 @@
+{
+  "name": "@dz-mini-vue/reactivity",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "esno src/index.ts"
+  },
+  "keywords": [],
+  "author": "Daniel Zhang",
+  "license": "ISC"
+}

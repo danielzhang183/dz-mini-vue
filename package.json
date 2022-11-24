@@ -1,0 +1,61 @@
+{
+  "name": "dz-mini-vue",
+  "type": "module",
+  "version": "0.0.0",
+  "packageManager": "pnpm@7.12.0",
+  "description": "",
+  "author": "Daniel Zhang",
+  "license": "MIT",
+  "homepage": "https://github.com/danielzhang183/dz-mini-vue#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danielzhang183/dz-mini-vue.git"
+  },
+  "bugs": "https://github.com/danielzhang183/dz-mini-vue/issues",
+  "keywords": [],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "main": "./dist/index.mjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/*",
+        "./dist/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "dev": "unbuild --stub",
+    "lint": "eslint .",
+    "prepublishOnly": "nr build",
+    "release": "bumpp && npm publish",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.27.0",
+    "@antfu/ni": "^0.18.8",
+    "@types/node": "^18.11.9",
+    "bumpp": "^8.2.1",
+    "eslint": "^8.28.0",
+    "esno": "^0.16.3",
+    "pnpm": "^7.17.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.9.3",
+    "unbuild": "^0.8.11",
+    "vite": "^3.2.4",
+    "vitest": "^0.23.4"
+  }
+}
