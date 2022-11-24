@@ -1,11 +1,11 @@
-import type { Deps, DepsMap, EffectFn } from './types'
+import type { Deps, DepsMap, EffectFn, EffectOptions } from './types'
 
 const targetMap: WeakMap<Object, DepsMap> = new WeakMap()
 
 let activeEffect: EffectFn | undefined
 const effectStack: EffectFn[] = []
 
-export function effect(fn: Function) {
+export function effect(fn: Function, options?: EffectOptions) {
   const effectFn: EffectFn = () => {
     cleanup(effectFn)
     activeEffect = effectFn
@@ -15,6 +15,7 @@ export function effect(fn: Function) {
     activeEffect = effectStack[effectStack.length - 1]
   }
 
+  effectFn.options = options || {}
   effectFn.deps = []
   effectFn()
 }
@@ -53,10 +54,15 @@ export function trigger(target: any, key: string): boolean {
     return false
 
   const effectsToRun = new Set(effects)
-  effects.forEach((effectFn) => {
-    if (effectFn !== activeEffect)
-      effectsToRun.add(effectFn)
+  effects.forEach((effect) => {
+    if (effect !== activeEffect)
+      effectsToRun.add(effect)
   })
-  effectsToRun.forEach(effectFn => effectFn())
+  effectsToRun.forEach((effectFn) => {
+    if (effectFn.options.scheduler)
+      effectFn.options.scheduler(effectFn)
+    else
+      effectFn()
+  })
   return true
 }

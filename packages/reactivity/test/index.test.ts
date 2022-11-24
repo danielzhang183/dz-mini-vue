@@ -20,9 +20,22 @@ const obj = new Proxy(data, {
 })
 
 describe('effect', () => {
-  it('schedule run', () => {
+  it.skip('scheduler run', () => {
     effect(() => {
       console.log(obj.foo)
+    })
+
+    obj.foo++
+    console.log('end')
+  })
+
+  it('scheduler run with options', () => {
+    effect(() => {
+      console.log(obj.foo)
+    }, {
+      scheduler(fn) {
+        setTimeout(fn, 0)
+      },
     })
 
     obj.foo++
