@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import { describe, it } from 'vitest'
 import { effect, track, trigger } from '../src'
+import { flushJob, jobQueue } from '../src/flush'
 
 const data = {
   ok: true,
@@ -26,10 +27,9 @@ describe('effect', () => {
     })
 
     obj.foo++
-    console.log('end')
   })
 
-  it('scheduler run with options', () => {
+  it.skip('scheduler run with options', () => {
     effect(() => {
       console.log(obj.foo)
     }, {
@@ -40,5 +40,20 @@ describe('effect', () => {
 
     obj.foo++
     console.log('end')
+  })
+
+  it('flush job', () => {
+    effect(() => {
+      console.log(obj.foo)
+    }, {
+      scheduler(fn) {
+        jobQueue.add(fn)
+        flushJob()
+      },
+    })
+    obj.foo++
+    console.log(jobQueue.size)
+    obj.foo++
+    console.log(jobQueue.size)
   })
 })
