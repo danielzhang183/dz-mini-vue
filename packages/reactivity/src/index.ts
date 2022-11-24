@@ -16,12 +16,16 @@ const data = {
 }
 
 let activeEffect: EffectFn | undefined
+const effectStack: EffectFn[] = []
 
 function effect(fn: Function) {
   const effectFn: EffectFn = () => {
     cleanup(effectFn)
     activeEffect = effectFn
+    effectStack.push(effectFn)
     fn()
+    effectStack.pop()
+    activeEffect = effectStack[effectStack.length - 1]
   }
 
   effectFn.deps = []
