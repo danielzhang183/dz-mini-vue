@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "esno src/index.ts"
+    "dev": "esno src/index.ts",
+    "test": "vitest"
   },
   "keywords": [],
   "author": "Daniel Zhang",
